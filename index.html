@@ -302,58 +302,89 @@
             animation: reveal 1s 4.5s forwards;
         }
         
-        .music-note {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255,255,255,0.9);
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            color: #e91e63;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        /* Music Player Section */
+        .music-section {
+            margin-top: 3rem;
             opacity: 0;
-            animation: slideIn 1s 5s forwards;
-            cursor: pointer;
-            transition: transform 0.3s;
+            animation: reveal 1s 5s forwards;
+            background: rgba(255,255,255,0.9);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         
-        .music-note:hover {
+        .music-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            color: #e91e63;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.3rem;
+        }
+        
+        .spotify-embed {
+            width: 100%;
+            height: 80px;
+            border-radius: 12px;
+            border: none;
+            margin-bottom: 1rem;
+        }
+        
+        .song-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, #1DB954, #1ed760);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: transform 0.3s;
+            margin-top: 0.5rem;
+        }
+        
+        .song-link:hover {
             transform: scale(1.05);
         }
         
-        @keyframes slideIn {
-            from { transform: translateX(100px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        .music-note::before {
+        .song-link::before {
             content: '🎵';
-            font-size: 1.2rem;
         }
         
         .floating-lyrics {
             position: fixed;
-            bottom: 80px;
+            bottom: 100px;
             right: 20px;
             max-width: 250px;
-            background: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.95);
             padding: 15px;
             border-radius: 15px;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #666;
             font-style: italic;
             opacity: 0;
             transition: opacity 0.5s;
             pointer-events: none;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 3px solid #e91e63;
         }
         
         .floating-lyrics.show {
             opacity: 1;
+        }
+        
+        .lyrics-btn {
+            background: none;
+            border: none;
+            color: #e91e63;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: underline;
+            margin-top: 0.5rem;
+            font-family: 'Playfair Display', serif;
         }
         
         /* Glitch effect for error */
@@ -374,6 +405,7 @@
             .name-input-screen h1 { font-size: 2.5rem; }
             .envelope { padding: 2rem 1.5rem; }
             .valentine-text { font-size: 1.1rem; }
+            .spotify-embed { height: 80px; }
         }
     </style>
 </head>
@@ -423,17 +455,32 @@
                     <p>Here's to us, to now, and to all the chapters we haven't written yet. You are loved, today and always.</p>
                 </div>
                 <div class="signature">Yours,<br>Someone Who Cares 💕</div>
+                
+                <!-- Music Player Section -->
+                <div class="music-section">
+                    <div class="music-header">
+                        <span>🎵</span>
+                        <span>This song reminds me of you...</span>
+                    </div>
+                    
+                    <!-- Spotify Embed Player -->
+                    <iframe class="spotify-embed" src="https://open.spotify.com/embed/track/2ZWlPOoWh0626oTaHrnl2a?utm_source=generator" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    
+                    <!-- Direct Song Link -->
+                    <a href="https://getsnap.link/bxwigUubJ9V?share_arg3=copy%20link" target="_blank" class="song-link">
+                        Open Ivy by Frank Ocean
+                    </a>
+                    
+                    <br>
+                    <button class="lyrics-btn" onclick="toggleLyrics()">Show Lyrics</button>
+                </div>
             </div>
         </div>
     </div>
     
-    <!-- Music Player -->
-    <div class="music-note" id="musicBtn" onclick="toggleLyrics()">
-        Now Playing: Ivy - Frank Ocean
-    </div>
-    
+    <!-- Floating Lyrics -->
     <div class="floating-lyrics" id="lyrics">
-        "I thought that I was dreaming when you said you loved me..."
+        "I thought that I was dreaming when you said you loved me..." 🎶
     </div>
 
     <script>
