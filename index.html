@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Surprise</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            font-family: 'Playfair Display', serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Floating hearts background */
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            animation: float 15s infinite linear;
+            bottom: -100px;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+                90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Screen states */
+        .screen {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.8s ease-in;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Name Input Screen */
+        .name-input-screen h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .input-wrapper {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .input-wrapper label {
+            display: block;
+            font-size: 1.2rem;
+            color: #e91e63;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+        
+        .input-wrapper input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #f8bbd0;
+            border-radius: 50px;
+            outline: none;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            transition: all 0.3s;
+        }
+        
+        .input-wrapper input:focus {
+            border-color: #e91e63;
+            box-shadow: 0 0 20px rgba(233, 30, 99, 0.2);
+        }
+        
+        .btn {
+            margin-top: 1.5rem;
+            padding: 15px 40px;
+            background: linear-gradient(45deg, #e91e63, #f06292);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Playfair Display', serif;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+        }
+        
+        /* Error Screen */
+        .error-screen h2 {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        .error-message {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .error-message span {
+            color: #e91e63;
+            font-weight: bold;
+        }
+        
+        /* Butterfly Screen */
+        .butterfly-screen {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .instruction {
+            position: absolute;
+            top: 20%;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 1.8rem;
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .butterfly {
+            font-size: 4rem;
+            cursor: pointer;
+            position: relative;
+            animation: flutter 3s infinite ease-in-out;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+            transition: transform 0.3s;
+            user-select: none;
+        }
+        
+        .butterfly:hover {
+            transform: scale(1.2);
+        }
+        
+        @keyframes flutter {
+            0%, 100% { transform: translate(0, 0) rotate(-5deg); }
+            25% { transform: translate(20px, -30px) rotate(5deg); }
+            50% { transform: translate(-10px, -50px) rotate(-5deg); }
+            75% { transform: translate(-20px, -20px) rotate(5deg); }
+        }
+        
+        .pop-effect {
+            position: absolute;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            animation: particle 1s ease-out forwards;
+        }
+        
+        @keyframes particle {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+        }
+        
+        /* Valentine Message Screen */
+        .message-screen {
+            padding: 2rem;
+        }
+        
+        .envelope {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .envelope::before {
+            content: '💌';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4rem;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+        }
+        
+        .valentine-text {
+            font-size: 1.2rem;
+            line-height: 2;
+            color: #444;
+            margin-top: 2rem;
+            text-align: left;
+            font-style: italic;
+        }
+        
+        .valentine-text p {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: reveal 1s forwards;
+        }
+        
+        .valentine-text p:nth-child(1) { animation-delay: 0.5s; }
+        .valentine-text p:nth-child(2) { animation-delay: 1.5s; }
+        .valentine-text p:nth-child(3) { animation-delay: 2.5s; }
+        .valentine-text p:nth-child(4) { animation-delay: 3.5s; }
+        
+        @keyframes reveal {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(20px); }
+        }
+        
+        .signature {
+            text-align: right;
+            margin-top: 2rem;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: #e91e63;
+            opacity: 0;
+            animation: reveal 1s 4.5s forwards;
+        }
+        
+        .music-note {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: #e91e63;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: slideIn 1s 5s forwards;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .music-note:hover {
+            transform: scale(1.05);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .music-note::before {
+            content: '🎵';
+            font-size: 1.2rem;
+        }
+        
+        .floating-lyrics {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            max-width: 250px;
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #666;
+            font-style: italic;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .floating-lyrics.show {
+            opacity: 1;
+        }
+        
+        /* Glitch effect for error */
+        .glitch {
+            animation: glitch 0.3s;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        @media (max-width: 600px) {
+            .name-input-screen h1 { font-size: 2.5rem; }
+            .envelope { padding: 2rem 1.5rem; }
+            .valentine-text { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="hearts" id="hearts"></div>
+    
+    <div class="container">
+        <!-- Screen 1: Name Input -->
+        <div class="screen name-input-screen active" id="screen1">
+            <h1>Happy Valentine's Day</h1>
+            <div class="input-wrapper">
+                <label for="nameInput">May I know your name?</label>
+                <input type="text" id="nameInput" placeholder="Type your name here..." autocomplete="off">
+                <button class="btn" onclick="checkName()">Continue</button>
+            </div>
+        </div>
+        
+        <!-- Screen 2: Error Message -->
+        <div class="screen error-screen" id="screen2">
+            <h2>Oops!</h2>
+            <div class="error-message">
+                <p>Name "<span id="enteredName"></span>" not recognized...</p>
+                <p style="margin-top: 1rem; font-size: 1.1rem; color: #888;">Just kidding! 😊</p>
+            </div>
+            <button class="btn" onclick="showButterfly()">Continue Anyway</button>
+        </div>
+        
+        <!-- Screen 3: Butterfly -->
+        <div class="screen butterfly-screen" id="screen3">
+            <div class="instruction">Pop the butterfly to reveal your surprise! 🦋</div>
+            <div class="butterfly" id="butterfly" onclick="popButterfly(event)">🦋</div>
+        </div>
+        
+        <!-- Screen 4: Valentine Message -->
+        <div class="screen message-screen" id="screen4">
+            <div class="envelope">
+                <div class="valentine-text">
+                    <p>Dear <span id="finalName"></span>,</p>
+                    
+                    <p>On this Valentine's Day, I wanted to take a moment to tell you how special you are to me. You bring a kind of magic into my life that I never knew existed—a gentle flutter in my chest, like butterflies dancing in a garden of possibilities.</p>
+                    
+                    <p>Every moment with you feels like a song I never want to end. You are my favorite notification, my sweetest daydream, and the reason I believe that beautiful things happen when we least expect them.</p>
+                    
+                    <p>Thank you for being you—unapologetically, wonderfully, perfectly you. Whether we're laughing until our sides hurt or sitting in comfortable silence, you make every second count.</p>
+                    
+                    <p>Here's to us, to now, and to all the chapters we haven't written yet. You are loved, today and always.</p>
+                </div>
+                <div class="signature">Yours,<br>Someone Who Cares 💕</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Music Player -->
+    <div class="music-note" id="musicBtn" onclick="toggleLyrics()">
+        Now Playing: Ivy - Frank Ocean
+    </div>
+    
+    <div class="floating-lyrics" id="lyrics">
+        "I thought that I was dreaming when you said you loved me..."
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('hearts');
+            const heartSymbols = ['💕', '💖', '💗', '💓', '💝'];
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                container.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 20000);
+            }, 1000);
+        }
+        
+        createHearts();
+        
+        let userName = '';
+        
+        function checkName() {
+            const input = document.getElementById('nameInput');
+            userName = input.value.trim();
+            
+            if (!userName) {
+                input.style.borderColor = '#e91e63';
+                input.placeholder = "Please enter your name first...";
+                return;
+            }
+            
+            // Show error screen regardless of name
+            document.getElementById('enteredName').textContent = userName;
+            document.getElementById('screen1').classList.remove('active');
+            document.getElementById('screen2').classList.add('active');
+            document.getElementById('screen2').classList.add('glitch');
+        }
+        
+        function showButterfly() {
+            document.getElementById('screen2').classList.remove('active');
+            document.getElementById('screen3').classList.add('active');
+        }
+        
+        function popButterfly(event) {
+            const butterfly = document.getElementById('butterfly');
+            const rect = butterfly.getBoundingClientRect();
+            const x = event.clientX;
+            const y = event.clientY;
+            
+            // Create particle explosion
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle pop-effect';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.setProperty('--tx', (Math.random() - 0.5) * 200 + 'px');
+                particle.style.setProperty('--ty', (Math.random() - 0.5) * 200 + 'px');
+                particle.style.background = `hsl(${Math.random() * 60 + 300}, 70%, 60%)`;
+                document.body.appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
+            
+            // Fade out butterfly
+            butterfly.style.transition = 'all 0.5s';
+            butterfly.style.transform = 'scale(0) rotate(360deg)';
+            butterfly.style.opacity = '0';
+            
+            setTimeout(() => {
+                document.getElementById('screen3').classList.remove('active');
+                document.getElementById('screen4').classList.add('active');
+                document.getElementById('finalName').textContent = userName;
+            }, 500);
+        }
+        
+        function toggleLyrics() {
+            const lyrics = document.getElementById('lyrics');
+            lyrics.classList.toggle('show');
+        }
+        
+        // Enter key support
+        document.getElementById('nameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkName();
+        });
+    </script>
+</body>
+</html>
